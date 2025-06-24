@@ -67,6 +67,10 @@ The following customizable variables let you change the behaviour of `oauth2-aut
 - `oauth2-auto-additional-providers-alist`: extra providers that `oauth2-auto`
   doesn't include by default, who also follow the OAuth2 protocol. This alist
   should follow the format from the value in `oauth2-auto--default-providers`.
+- `oauth2-auto-manually-auth`: if non-nil, prevents automatic browser launching.
+  Instead, displays the authorization URL and prompts the user to manually copy
+  the authorization code. Useful in headless environments or when automatic
+  browser opening is problematic.
 
 ## Alerts
 
@@ -126,6 +130,27 @@ stdout.
   (princ (oauth2-auto-access-token-sync username (intern provider)))
   (princ "\n"))
 ```
+
+
+## Manual Authentication Mode
+
+By default, `oauth2-auto` automatically opens your browser for OAuth authentication. However, you can enable manual authentication mode by setting:
+
+```emacs-lisp
+(setq oauth2-auto-manually-auth t)
+```
+
+In manual mode:
+1. Instead of opening a browser automatically, `oauth2-auto` will display the authorization URL
+2. You manually visit this URL in your browser
+3. After completing authentication, the browser will redirect to a 404 page (this is normal behavior since the callback URL is mandatory but not actually serving content)
+4. Copy the authorization code from the `code` parameter in the URL of the 404 page
+5. Paste the code when prompted by Emacs
+
+This is useful in scenarios such as:
+- Running Emacs in a headless environment (servers, containers)
+- Systems where automatic browser launching doesn't work properly
+- Security-conscious setups where you want explicit control over browser interaction
 
 ## Privacy policy
 
